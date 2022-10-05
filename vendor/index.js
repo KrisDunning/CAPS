@@ -2,16 +2,10 @@
 const {io} = require('socket.io-client');
 const socket =io('http://localhost:3002');
 const request= require('./requestPickup');
+const delivered = require('./deliveredResponse');
 const Chance=require('chance');
 let chance = new Chance();
 
-
-
-function VENDORTHANKS(thePayload){
-  setTimeout(() => {
-    console.log(`Thank you ${thePayload.customer}`);
-  }, 500);
-}
 
 function newOrder(){
   let order={
@@ -22,6 +16,8 @@ function newOrder(){
   }
   return order;
 }
+let handleDelivered=delivered(socket);
+socket.on('PACKAGEDELIVERED', handleDelivered);
 const createRequest=request(socket);
 
 setTimeout(() => {

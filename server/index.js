@@ -14,19 +14,22 @@ const CAPS = server.of('/CAPS');
 
 
 // connection to server socket
-server.on('connection',(socket)=>(payload)=>{
+server.on('connection',(socket)=>{
   console.log('Socket connected to Event Server!',socket.id);
 
   socket.on('REQUESTPICKUP', (payload)=>{
     logEvent('Request order Pickup',payload);
+    socket.broadcast.emit('REQUESTPICKUP',payload);
   });
 
   socket.on('PACKAGEINTRANSIT', (payload)=>{
     logEvent('Order In Transit',payload);
+    socket.broadcast.emit('PACKAGEINTRANSIT',payload);
   });
 
-  socket.on('PACKAGEDELIVERED',(payload)=>{
+  socket.on('PACKAGEDELIVERED', (payload)=>{
     logEvent('Package has been delivered',payload);
+    socket.broadcast.emit('PACKAGEDELIVERED',payload);
   });
 
 });
@@ -34,6 +37,7 @@ server.on('connection',(socket)=>(payload)=>{
 // connection to CAPS namespace
 CAPS.on('connection',(socket)=>{
   console.log('Socket connected to CAPS namespace!', socket.id);
+
 });
 
 

@@ -10,11 +10,13 @@
     "test-watch": "jest --watchAll --verbose --coverage",
     "db:config": "sequelize init:config",
     "db:create": "sequelize db:create"
-},
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chance": "^1.1.8"
+    "chance": "^1.1.8",
+    "socket.io": "^4.5.2",
+    "socket.io-client": "^4.5.2"
   }
 }

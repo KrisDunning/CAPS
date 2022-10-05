@@ -25,6 +25,10 @@ server.on('connection',(socket)=>(payload)=>{
     logEvent('Order In Transit',payload);
   });
 
+  socket.on('PACKAGEDELIVERED',(payload)=>{
+    logEvent('Package has been delivered',payload);
+  });
+
 });
 
 // connection to CAPS namespace

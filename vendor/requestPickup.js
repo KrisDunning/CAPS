@@ -1,10 +1,10 @@
 'use strict';
 
 
-module.exports = (socket)=>(newOrder)=>{
+module.exports = (socket)=>(payload)=>{
 
     console.log('REQUESTPICKUP active');
-    socket.emit('REQUESTPICKUP',newOrder);
+    socket.emit('REQUESTPICKUP',payload);
 }
 
 

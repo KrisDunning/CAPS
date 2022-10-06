@@ -1,24 +1,31 @@
 'use strict';
-//require('..index/driver/index');
-//require('../vendor/index');
 const {Server} = require('socket.io');
 const PORT = 3002;
 // assign socket.io as the server on 3002
 const server = new Server(PORT);
 //namespace
 const CAPS = server.of('/CAPS');
+const Queue = require('../lib/queue');
+const acmeMSGQueue= new Queue();
+const flowersMSGQueue = new Queue();
 
 
-// eventPool.on('PACKAGEINTRANSIT', PACKAGEDELIVERED);
-// eventPool.on('PACKAGEDELIVERED', VENDORTHANKS);
+// connection to CAPS namespace
+CAPS.on('connection',(socket)=>{
+  console.log('Socket connected to CAPS namespace!', socket.id);
 
-
-// connection to server socket
-server.on('connection',(socket)=>{
-  console.log('Socket connected to Event Server!',socket.id);
+  // can trigger events on join of CAPS namespace
+  socket.on('JOIN',(queueId)=>{
+    socket.join(queueId);
+    socket.emit('JOIN', queueId);
+  });
 
   socket.on('REQUESTPICKUP', (payload)=>{
     logEvent('Request order Pickup',payload);
+    console.log('request payload',payload);
+    let currentQueue= flowersMSGQueue.read(payload.queueId);
+
+
     socket.broadcast.emit('REQUESTPICKUP',payload);
   });
 
@@ -31,12 +38,6 @@ server.on('connection',(socket)=>{
     logEvent('Package has been delivered',payload);
     socket.broadcast.emit('PACKAGEDELIVERED',payload);
   });
-
-});
-
-// connection to CAPS namespace
-CAPS.on('connection',(socket)=>{
-  console.log('Socket connected to CAPS namespace!', socket.id);
 
 });
 

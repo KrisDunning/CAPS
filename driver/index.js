@@ -1,11 +1,14 @@
 'use strict';
-const {io} = require('socket.io-client');
-const socket =io('http://localhost:3002');
-const deliveryRequest = require('./packageInTransit');
-const inTransit = require('./packageDelivered');
+const msgClient = require('../lib/messageClient');
+const driverClient= new msgClient('driver');
 
-const handleDeliverRequest = deliveryRequest(socket);
-const handleInTransit = inTransit(socket);
+driverClient.publish('GETDELIVERIES');
 
-socket.on('REQUESTPICKUP', handleDeliverRequest);
-socket.on('PACKAGEINTRANSIT',handleInTransit);
+driverClient.subscribe('PICKEDUP',payload=>{
+  console.log('in transit activated');
+  driverClient.publish('PACKAGEINTRANSIT',payload);
+});
+driverClient.subscribe('PACKAGEDELIVERED',payload=>{
+  console.log('package delivered activated');
+  driverClient.publish('DELIVERYCONFIRMED',payload);
+});

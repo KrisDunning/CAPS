@@ -1,11 +1,8 @@
 'use strict';
-const {io} = require('socket.io-client');
-const socket =io('http://localhost:3002');
-const request= require('./requestPickup');
-const delivered = require('./deliveredResponse');
 const Chance=require('chance');
 let chance = new Chance();
-
+let msgClient = require('../lib/messageClient');
+let flowerClient= new msgClient("flower");
 
 function newOrder(storeName){
   let order={
@@ -16,12 +13,14 @@ function newOrder(storeName){
   }
   return order;
 }
-let handleDelivered=delivered(socket);
-socket.on('PACKAGEDELIVERED', handleDelivered);
-const createRequest=request(socket);
 
-setTimeout(() => {
-  let order = newOrder(flowers);
-  createRequest(order);
-}, 4000);
+flowerClient.subscribe('CUSTOMERTHANKS', payload =>{
+  console.log('delivered response active');
+  console.log(`Thanks ${payload.customer}`);
+});
+
+setInterval(() => {
+  console.log('REQUESTPICKUP active');
+  flowerClient.publish('REQUESTPICKUP',newOrder('flower store'));
+}, 10000);
 

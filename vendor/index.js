@@ -7,9 +7,9 @@ const Chance=require('chance');
 let chance = new Chance();
 
 
-function newOrder(){
+function newOrder(storeName){
   let order={
-    store :chance.company(),
+    store :storeName,
     orderID: chance.guid(),
     customer : chance.name(),
     address: chance.address()
@@ -21,7 +21,7 @@ socket.on('PACKAGEDELIVERED', handleDelivered);
 const createRequest=request(socket);
 
 setTimeout(() => {
-  let order = newOrder();
+  let order = newOrder(flowers);
   createRequest(order);
 }, 4000);
 
